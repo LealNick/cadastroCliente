@@ -1,7 +1,7 @@
 package com.example.cadastrocliente.controller;
 
 import com.example.cadastrocliente.model.Cliente;
-import com.example.cadastrocliente.repository.ClienteRepository;
+import com.example.cadastrocliente.service.ClienteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,37 +12,30 @@ import java.util.List;
 public class ClienteController {
 
     @Autowired
-    private ClienteRepository clienteRepository;
+    private ClienteService clienteService;
 
     @PostMapping
     public Cliente criarCliente(@RequestBody Cliente cliente) {
-        return clienteRepository.save(cliente);
+        return clienteService.criarCliente(cliente);
     }
 
     @GetMapping
     public List<Cliente> listarClientes() {
-        return clienteRepository.findAll();
+        return clienteService.listarClientes();
     }
 
     @GetMapping("/{id}")
     public Cliente obterCliente(@PathVariable Long id) {
-        return clienteRepository.findById(id).orElse(null);
+        return clienteService.obterCliente(id).orElse(null);
     }
 
     @PutMapping("/{id}")
     public Cliente atualizarCliente(@PathVariable Long id, @RequestBody Cliente clienteAtualizado) {
-        return clienteRepository.findById(id)
-                .map(cliente -> {
-                    cliente.setNome(clienteAtualizado.getNome());
-                    cliente.setEndereco(clienteAtualizado.getEndereco());
-                    cliente.setDataNascimento(clienteAtualizado.getDataNascimento());
-                    return clienteRepository.save(cliente);
-                })
-                .orElse(null);
+        return clienteService.atualizarCliente(id, clienteAtualizado);
     }
 
     @DeleteMapping("/{id}")
     public void deletarCliente(@PathVariable Long id) {
-        clienteRepository.deleteById(id);
+        clienteService.deletarCliente(id);
     }
 }
